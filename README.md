@@ -23,9 +23,11 @@ sudo pacman -S ffmpeg jp2a
 Usage: ./v2a.sh [options]
 
 Options:
-  -i, --input <file>     Set the input ASCII video file (required)
-  -o  --output <file>    Set the output video file
+  -p, --preview          Preview the ASCII video after creation
+  -i, --input <file>     Set the input video file (required)
+  -o, --output <file>    Set the output ASCII file
   -j, --jp2a <args>      Set the arguments for jp2a
   -f, --fps <number>     Set the frames per second
   -h, --help             Show this help message
+  -v, --version          Show version
 ```
