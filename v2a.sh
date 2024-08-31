@@ -37,6 +37,12 @@ help()
   exit 1
 }
 
+version()
+{
+  echo "v$version"
+  exit 0
+}
+
 while [[ $# -gt 0 ]]; do
   key="$1"
   case $key in
@@ -68,8 +74,7 @@ while [[ $# -gt 0 ]]; do
       help
       ;;
     -v|--version)
-      echo "v$version"
-      exit 0
+      version
       ;;
     *)
       echo "Unknown option: $1"
@@ -99,7 +104,7 @@ if [ -z "$output_ascii" ]; then
 fi
 
 temp_dir=$(mktemp -d)
-echo "$temp_dir"
+
 if [ -z "$fps" ]; then
   fps_str=$(ffprobe -v error -select_streams v:0 -show_entries stream=avg_frame_rate -of default=nokey=1:noprint_wrappers=1 "$input_video")
   IFS='/' read -ra parts <<< "$fps_str"
