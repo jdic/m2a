@@ -27,14 +27,14 @@ g++ -std=c++17 -o m2a m2a.cpp
 Usage: ./m2a [options]
 
 Options:
-  -r, --real-time        Display each frame in real-time during conversion
+  -r, --real-time              Display each frame in real-time during conversion
+  -p, --preview                Preview the ASCII video after creation
   -i, --input <file | URL>     Set the input video file (required)
-  -p, --preview          Preview the ASCII video after creation
-  -j, --jp2a <args>      Set the arguments for jp2a
-  -o, --output <file>    Set the output ASCII file
-  -f, --fps <number>     Set the frames per second
-  -h, --help             Show this help message
-  -v, --version          Show version
+  -j, --jp2a <args>            Set the arguments for jp2a
+  -o, --output <file>          Set the output ASCII file
+  -f, --fps <number>           Set the frames per second
+  -h, --help                   Show this help message
+  -v, --version                Show version
 ```
 
 ## ASCII to Shell

@@ -24,14 +24,14 @@ void help()
   std::cout << "Usage: ./m2a [options]" << std::endl
             << std::endl
             << "Options:" << std::endl
-            << "  -r, --real-time        Display each frame in real-time during conversion" << std::endl
-            << "  -p, --preview          Preview the ASCII video after creation" << std::endl
-            << "  -i, --input <file>     Set the input video file (required)" << std::endl
-            << "  -j, --jp2a <args>      Set the arguments for jp2a" << std::endl
-            << "  -o, --output <file>    Set the output ASCII file" << std::endl
-            << "  -f, --fps <number>     Set the frames per second" << std::endl
-            << "  -h, --help             Show this help message" << std::endl
-            << "  -v, --version          Show version" << std::endl;
+            << "  -r, --real-time              Display each frame in real-time during conversion" << std::endl
+            << "  -p, --preview                Preview the ASCII video after creation" << std::endl
+            << "  -i, --input <file | URL>     Set the input video file (required)" << std::endl
+            << "  -j, --jp2a <args>            Set the arguments for jp2a" << std::endl
+            << "  -o, --output <file>          Set the output ASCII file" << std::endl
+            << "  -f, --fps <number>           Set the frames per second" << std::endl
+            << "  -h, --help                   Show this help message" << std::endl
+            << "  -v, --version                Show version" << std::endl;
   exit(1);
 }
 
