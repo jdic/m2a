@@ -6,7 +6,7 @@
 #include <string>
 #include <regex>
 
-const std::string version = "0.0.0-a";
+const std::string version = "0.0.1";
 
 void help()
 {
