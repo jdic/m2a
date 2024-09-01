@@ -28,8 +28,8 @@ Usage: ./m2a [options]
 
 Options:
   -r, --real-time        Display each frame in real-time during conversion
+  -i, --input <file | URL>     Set the input video file (required)
   -p, --preview          Preview the ASCII video after creation
-  -i, --input <file>     Set the input video file (required)
   -j, --jp2a <args>      Set the arguments for jp2a
   -o, --output <file>    Set the output ASCII file
   -f, --fps <number>     Set the frames per second

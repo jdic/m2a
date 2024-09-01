@@ -57,9 +57,53 @@ bool is_numeric(const std::string &str)
   return std::regex_match(str, std::regex("[0-9]+"));
 }
 
+bool is_url(const std::string &str)
+{
+  return std::regex_match(str, std::regex(R"((http|https)://([^\s]+))"));
+}
+
 void get_version()
 {
   std::cout << "v" << version << std::endl;
+}
+
+std::string get_temp_dir()
+{
+  FILE* tempdir_pipe = popen("mktemp -d", "r");
+
+  char buffer[128];
+  std::string temp_dir;
+
+  if (fgets(buffer, sizeof(buffer), tempdir_pipe) != nullptr)
+  {
+    temp_dir = std::string(buffer);
+
+    pclose(tempdir_pipe);
+
+    return temp_dir.substr(0, temp_dir.length() - 1);
+  }
+
+  else
+  {
+    std::cerr << "Error: Could not create temporary directory" << std::endl;
+    exit(1);
+  }
+}
+
+std::string download_file(const std::string &url)
+{
+  std::string file_name = get_temp_dir() + "/" + get_filename_with_ext(url);
+
+  std::string download_command = "wget -q -O \"" + file_name + "\" \"" + url + "\"";
+  int result = system(download_command.c_str());
+
+  if (result != 0)
+  {
+    std::cerr << "Error: Could not download file from " << url << std::endl;
+    exit(1);
+  }
+
+  return file_name;
 }
 
 int main(int argc, char *argv[])
@@ -122,11 +166,18 @@ int main(int argc, char *argv[])
     }
   }
 
+  std::string input_media_origin = input_media;
+
   if (input_media.empty())
   {
     std::cerr << "Error: input file not set" << std::endl << std::endl;
     help();
     exit(1);
+  }
+
+  if (is_url(input_media))
+  {
+    input_media = download_file(input_media);
   }
 
   if (output_ascii.empty())
@@ -149,8 +200,7 @@ int main(int argc, char *argv[])
     fs::remove(output_ascii);
   }
 
-  std::string temp_dir = fs::temp_directory_path().string() + "/frames_" + get_filename_without_ext(input_media);
-  fs::create_directory(temp_dir);
+  std::string temp_dir = get_temp_dir();
 
   if (fps.empty())
   {
@@ -232,7 +282,12 @@ int main(int argc, char *argv[])
   }
 
   ascii_file.close();
-  fs::remove_all(temp_dir);
+  fs::remove(temp_dir);
+
+  if (is_url(input_media_origin))
+  {
+    fs::remove(input_media);
+  }
 
   std::cout << std::endl << "ASCII video saved to " << output_ascii << std::endl;
 
