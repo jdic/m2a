@@ -14,7 +14,7 @@ std::string version = "0.0.0-a";
 
 std::string jp2a_args = "--colors";
 std::string output_ascii = "";
-std::string input_video = "";
+std::string input_media = "";
 std::string fps = "";
 
 bool preview = false;
@@ -33,6 +33,13 @@ void help()
             << "  -h, --help             Show this help message" << std::endl
             << "  -v, --version          Show version" << std::endl;
   exit(1);
+}
+
+std::string get_file_directory(const std::string &file_path)
+{
+  fs::path path = fs::path(file_path);
+
+  return path.parent_path().string();
 }
 
 std::string get_filename_without_ext(const std::string &filename)
@@ -77,7 +84,7 @@ int main(int argc, char *argv[])
     switch (option)
     {
     case 'i':
-      input_video = optarg;
+      input_media = optarg;
       break;
 
     case 'o':
@@ -115,7 +122,7 @@ int main(int argc, char *argv[])
     }
   }
 
-  if (input_video.empty())
+  if (input_media.empty())
   {
     std::cerr << "Error: input file not set" << std::endl << std::endl;
     help();
@@ -124,7 +131,7 @@ int main(int argc, char *argv[])
 
   if (output_ascii.empty())
   {
-    output_ascii = get_filename_without_ext(input_video) + ".txt";
+    output_ascii = get_file_directory(input_media) + "/" + get_filename_without_ext(input_media) + ".txt";
   }
 
   if (fs::exists(output_ascii))
@@ -142,12 +149,12 @@ int main(int argc, char *argv[])
     fs::remove(output_ascii);
   }
 
-  std::string temp_dir = fs::temp_directory_path().string() + "/frames_" + get_filename_without_ext(input_video);
+  std::string temp_dir = fs::temp_directory_path().string() + "/frames_" + get_filename_without_ext(input_media);
   fs::create_directory(temp_dir);
 
   if (fps.empty())
   {
-    std::string fps_str = "ffprobe -v error -select_streams v:0 -show_entries stream=avg_frame_rate -of default=nokey=1:noprint_wrappers=1 " + input_video + " 2>&1";
+    std::string fps_str = "ffprobe -v error -select_streams v:0 -show_entries stream=avg_frame_rate -of default=nokey=1:noprint_wrappers=1 \"" + input_media + "\" 2>&1";
     FILE *fps_pipe = popen(fps_str.c_str(), "r");
 
     char buffer[128];
@@ -174,7 +181,7 @@ int main(int argc, char *argv[])
     }
   }
 
-  std::string video_info = "ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 " + input_video + " 2>&1";
+  std::string video_info = "ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 \"" + input_media + "\" 2>&1";
   FILE *info_pipe = popen(video_info.c_str(), "r");
 
   char buffer[128];
@@ -190,12 +197,12 @@ int main(int argc, char *argv[])
   std::string width = result.substr(0, result.find('x'));
   std::string height = result.substr(result.find('x') + 1);
 
-  std::cout << "File        " << get_filename_with_ext(input_video) << std::endl;
+  std::cout << "File        " << get_filename_with_ext(input_media) << std::endl;
   std::cout << "Resolution  " << width << "x" << height;
   std::cout << "FPS         " << fps << std::endl << std::endl;
   std::cout << "Handling frames..." << std::endl;
 
-  std::string ffmpeg_command = "ffmpeg -i " + input_video + " -r " + fps + " " + temp_dir + "/frame_%04d.jpg > /dev/null 2>&1";
+  std::string ffmpeg_command = "ffmpeg -i \"" + input_media + "\" -r " + fps + " \"" + temp_dir + "/frame_%04d.jpg\" > /dev/null 2>&1";
   system(ffmpeg_command.c_str());
 
   int total_frames = std::distance(fs::directory_iterator(temp_dir), fs::directory_iterator{});
@@ -207,7 +214,7 @@ int main(int argc, char *argv[])
 
   for (const auto &file : fs::directory_iterator(temp_dir))
   {
-    std::string jp2a_command = "jp2a " + jp2a_args + " " + file.path().string();
+    std::string jp2a_command = "jp2a " + jp2a_args + " \"" + file.path().string() + "\"";
     FILE *jp2a_pipe = popen(jp2a_command.c_str(), "r");
     std::string jp2a_output;
 
@@ -235,7 +242,7 @@ int main(int argc, char *argv[])
     {
       if (fs::exists(output_ascii))
       {
-        std::string preview_command = "./a2s -i " + output_ascii;
+        std::string preview_command = "./a2s -i  \"" + output_ascii + "\"";
         system(preview_command.c_str());
       }
 

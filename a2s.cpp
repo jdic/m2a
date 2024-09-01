@@ -148,6 +148,7 @@ int main(int argc, char *argv[])
       {
         current_frame += line + "\n";
       }
+
       else
       {
         move_cursor_home();
