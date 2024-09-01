@@ -10,7 +10,7 @@
 
 namespace fs = std::filesystem;
 
-std::string version = "0.0.1";
+std::string version = "0.0.1-1";
 
 std::string jp2a_args = "--colors";
 std::string output_ascii = "";
