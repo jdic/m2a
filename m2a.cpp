@@ -10,7 +10,7 @@
 
 namespace fs = std::filesystem;
 
-std::string version = "0.0.1";
+std::string version = "0.0.1-1";
 
 std::string jp2a_args = "--colors";
 std::string output_ascii = "";
@@ -282,11 +282,11 @@ int main(int argc, char *argv[])
   }
 
   ascii_file.close();
-  fs::remove(temp_dir);
+  fs::remove_all(temp_dir);
 
   if (is_url(input_media_origin))
   {
-    fs::remove(input_media);
+    fs::remove_all(input_media);
   }
 
   std::cout << std::endl << "ASCII video saved to " << output_ascii << std::endl;
